@@ -1,0 +1,47 @@
+1. when subscribing, don't use take the id from the request, this can be easily forged, and users can easily subscribe with other users id,
+instead, you already have the id from 'req.user._id' which is handled by passport and much harder to forge (:
+
+
+this is how new subscribe looks (fix it in unsubscribe as well):
+
+app.post('/api/subscribe', ensureAuthenticated, function(req, res, next) {
+  Show.findById(req.body.showId, function(err, show) {
+    if (err) return next(err);
+    ////// CHANGE HERE
+    show.subscribers.push(req.user._id);
+    //////////////////
+    show.save(function(err) {
+      if (err) return next(err);
+      res.send(200);
+    });
+  });
+});
+
+and on the client side there's no need to send 'currentUser' anymore
+
+DetailCtrl
+
+$scope.subscribe = function() {
+					Subscription.subscribe(show).success(function() {
+						$scope.show.subscribers.push($rootScope.currentUser._id);
+					});
+				};
+
+				$scope.unsubscribe = function() {
+					Subscription.unsubscribe(show).success(function() {
+						var index = $scope.show.subscribers.indexOf($rootScope.currentUser._id);
+						$scope.show.subscribers.splice(index, 1);
+					})
+				};
+
+subscription service
+factory('Subscription', ['$http', function($http){
+		return {
+			subscribe: function(show) {
+				return $http.post('/api/subscribe', { showId: show._id });
+			},
+			unsubscribe: function(show) {
+				return $http.post('/api/unsubscribe', { showId: show._id });
+			}
+		};
+	}]);
