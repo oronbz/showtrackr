@@ -17,7 +17,6 @@
 						});
 					},
 					function(response) {
-						console.log(response);
 						$scope.showName = '';
 						$scope.addForm.$setPristine();
 						$alert({
