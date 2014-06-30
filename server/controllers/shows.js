@@ -110,9 +110,9 @@ exports.create = function(req, res, next) {
 	], function(err, show) {
 		if (err) return next(err);
 		show.save(function(err) {
-			var alertDate = Date.create('Next ' + show.airsDayOfWeek + ' at' + show.airsTime).rewind({ hour: 2 });
-			agenda.schedule(alertDate, 'send email alert', show.name).repeatEvery('1 week');
 			if (err) return next(err);
+			var alertDate = Date.create('Next ' + show.airsDayOfWeek + ' at ' + show.airsTime).rewind({ hour: 2 });
+			agenda.schedule(alertDate, 'send email alert', show.name).repeatEvery('1 week');
 			res.send(200);
 		})
 	});
