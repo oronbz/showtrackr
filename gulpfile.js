@@ -37,7 +37,7 @@ gulp.task('templates', function() {
 
 gulp.task('watch', function() {
 	gulp.watch('public/stylesheets/*.scss', ['sass']);
-	gulp.watch(['public/**/.js', '!public/app.min.js', '!public/vendor'], ['compress']);
+	gulp.watch(['public/**/*.js', '!public/app.min.js', '!public/vendor'], ['compress']);
 	gulp.watch('public/views/**/*.html', ['templates']);
 });
 
