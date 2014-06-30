@@ -9,6 +9,7 @@ module.exports = function(config) {
 
 	agenda.define('send email alert', function(job, done) {
 		Show.findOne({ name: job.attrs.data }).populate('subscribers').exec(function(err, show) {
+
 			var emails = show.subscribers.map(function(user) {
 				return user.email;
 			});
@@ -16,6 +17,12 @@ module.exports = function(config) {
 			var upcomingEpisode = show.episodes.filter(function(episode) {
 				return new Date(episode.firstAired) > new Date();
 			})[0];
+
+			if (!upcomingEpisode){
+				return done();
+			}
+
+			console.log(upcomingEpisode);
 
 			var smtpTransport = nodemailer.createTransport('SMTP', {
 				service: 'SendGrid',
