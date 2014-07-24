@@ -9,7 +9,9 @@ module.exports = function(config) {
 
 	agenda.define('send email alert', function(job, done) {
 		Show.findOne({ name: job.attrs.data }).populate('subscribers').exec(function(err, show) {
-
+			if (!show) {
+				return done();
+			}
 			var emails = show.subscribers.map(function(user) {
 				return user.email;
 			});
